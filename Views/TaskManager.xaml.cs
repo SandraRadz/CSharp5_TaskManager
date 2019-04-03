@@ -1,3 +1,5 @@
+using MyTaskManager.ViewModels;
+
 namespace MyTaskManager
 {
     public partial class TaskManager
@@ -5,6 +7,7 @@ namespace MyTaskManager
         public TaskManager()
         {
             InitializeComponent();
+            DataContext = new TaskManagerViewModel();
         }
     }
 }

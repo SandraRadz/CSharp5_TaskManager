@@ -47,16 +47,26 @@ namespace MyTaskManager.ViewModels
 
         internal TaskManagerViewModel()
         {
-            foreach (Process process in Process.GetProcesses())
-            {
-                Console.WriteLine("ID: {0}  Name: {1}", process.Id, process.ProcessName);
-            }
+           // foreach (Process process in Process.GetProcesses())
+           // {
+           //     Console.WriteLine("ID: {0}  Name: {1}", process.Id, process.ProcessName);
+           //}
             _processes = new ObservableCollection<MyProcess>(StationManager.DataStorage.ProcessesList);
-            _tokenSource = new CancellationTokenSource();
+            Console.WriteLine("hello");
+            Console.WriteLine(_processes.Count);
+           _processName="";
+           _processId=0;
+           _isActive = false;
+           _cpuPercent=0;
+           _memoryPersent=0;
+           _threadNum=0;
+           _user="";
+          _filePath="";
+           _startTime=DateTime.Today;
+        _tokenSource = new CancellationTokenSource();
             _token = _tokenSource.Token;
             StartWorkingThread();
             StationManager.StopThreads += StopWorkingThread;
-
         }
 
         public string ProcessName

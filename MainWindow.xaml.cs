@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using MyTaskManager.Models;
+using MyTaskManager.Tools.DataStorage;
+using MyTaskManager.Tools.Managers;
+using MyTaskManager.ViewModels;
 
 namespace MyTaskManager
 {
@@ -22,7 +27,19 @@ namespace MyTaskManager
     {
         public MainWindow()
         {
+            InitializeApplication();
             InitializeComponent();
+            DataContext = new MainWindowViewModel();
+        }
+
+        private void InitializeApplication()
+        {
+            List<MyProcess> proc = new List<MyProcess>();
+            foreach (Process process in Process.GetProcesses())
+            {
+                proc.Add(new MyProcess(process));
+            }
+            StationManager.Initialize(new Initialization());
         }
     }
 }

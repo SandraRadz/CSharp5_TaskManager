@@ -28,9 +28,11 @@ namespace MyTaskManager.Models
             _memoryPersent = process.PrivateMemorySize64 / 1024;
             _threadNum = process.Threads.Count;
             _user = process.MachineName;
-            _filePath = process.MainModule.FileName;
-            _startTime = process.StartTime;
-       
+            //_filePath = process.MainModule.FileName;
+            _filePath = "path";
+            //_startTime = process.StartTime;
+            _startTime = DateTime.Today;
+            
         }
 
         public string ProcessName

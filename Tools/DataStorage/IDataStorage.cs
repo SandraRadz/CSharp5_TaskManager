@@ -11,6 +11,8 @@ namespace MyTaskManager.Tools.DataStorage
         //Process GetProcessById(int id);
 
         void AddProcess(MyProcess process);
+
         List<MyProcess> ProcessesList { get; }
+         
     }
 }
