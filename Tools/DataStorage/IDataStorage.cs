@@ -12,7 +12,7 @@ namespace MyTaskManager.Tools.DataStorage
 
         void AddProcess(MyProcess process);
 
-        List<MyProcess> ProcessesList { get; }
+        List<MyProcess> ProcessesList { get; set; }
          
     }
 }

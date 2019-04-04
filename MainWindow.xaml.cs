@@ -27,19 +27,9 @@ namespace MyTaskManager
     {
         public MainWindow()
         {
-            InitializeApplication();
             InitializeComponent();
             DataContext = new MainWindowViewModel();
         }
 
-        private void InitializeApplication()
-        {
-            List<MyProcess> proc = new List<MyProcess>();
-            foreach (Process process in Process.GetProcesses())
-            {
-                proc.Add(new MyProcess(process));
-            }
-            StationManager.Initialize(new Initialization());
-        }
     }
 }

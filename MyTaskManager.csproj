@@ -61,7 +61,7 @@
     <Compile Include="Properties\Annotation.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Tools\DataStorage\IDataStorage.cs" />
-    <Compile Include="Tools\DataStorage\Initialization.cs" />
+    <Compile Include="Tools\DataStorage\MyDataStor.cs" />
     <Compile Include="Tools\Managers\LoaderManager.cs" />
     <Compile Include="Tools\Managers\StationManager.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />

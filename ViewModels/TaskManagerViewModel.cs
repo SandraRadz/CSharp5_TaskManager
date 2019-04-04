@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MyTaskManager.Annotations;
 using MyTaskManager.Models;
+using MyTaskManager.Tools.DataStorage;
 using MyTaskManager.Tools.Managers;
 
 namespace MyTaskManager.ViewModels
@@ -47,23 +48,15 @@ namespace MyTaskManager.ViewModels
 
         internal TaskManagerViewModel()
         {
-           // foreach (Process process in Process.GetProcesses())
-           // {
-           //     Console.WriteLine("ID: {0}  Name: {1}", process.Id, process.ProcessName);
-           //}
-            _processes = new ObservableCollection<MyProcess>(StationManager.DataStorage.ProcessesList);
-            Console.WriteLine("hello");
-            Console.WriteLine(_processes.Count);
-           _processName="";
-           _processId=0;
-           _isActive = false;
-           _cpuPercent=0;
-           _memoryPersent=0;
-           _threadNum=0;
-           _user="";
-          _filePath="";
-           _startTime=DateTime.Today;
-        _tokenSource = new CancellationTokenSource();
+            _processes = new ObservableCollection<MyProcess>();
+            foreach (Process process in Process.GetProcesses())
+            {
+                _processes.Add(new MyProcess(process));
+            }
+
+            //StationManager.Initialize(new MyDataStor(_processes.ToList()));
+
+            _tokenSource = new CancellationTokenSource();
             _token = _tokenSource.Token;
             StartWorkingThread();
             StationManager.StopThreads += StopWorkingThread;
@@ -202,22 +195,21 @@ namespace MyTaskManager.ViewModels
 
         private void WorkingThreadProcess()
         {
-           /* int i = 0;
+            int i = 0;
             while (!_token.IsCancellationRequested)
             {
-                var users = _processes.ToList();
-                users.Add(new Process("FirstNAme" + i, "LastNAme" + i, "Email" + i, "Login" + i, "Password" + i));
-                LoaderManager.Instance.ShowLoader();
-                Process = new ObservableCollection<Process>(users);
-                for (int j = 0; j < 3; j++)
+                List<MyProcess> pr = new List<MyProcess>(); 
+                foreach (Process proc in Process.GetProcesses())
                 {
-                    Thread.Sleep(500);
-                    if (_token.IsCancellationRequested)
-                        break;
+                    pr.Add(new MyProcess(proc));
                 }
+                
+                //LoaderManager.Instance.ShowLoader();
+                Processes = new ObservableCollection<MyProcess>(pr);
+               
                 if (_token.IsCancellationRequested)
                     break;
-                LoaderManager.Instance.HideLoader();
+                //LoaderManager.Instance.HideLoader();
                 for (int j = 0; j < 10; j++)
                 {
                     Thread.Sleep(500);
@@ -227,18 +219,25 @@ namespace MyTaskManager.ViewModels
                 if (_token.IsCancellationRequested)
                     break;
                 i++;
-            }*/
+            }
         }
 
         private void BackgroundWorkerProcess(object sender, DoWorkEventArgs doWorkEventArgs)
         {
-            /*var worker = (BackgroundWorker)sender;
+            var worker = (BackgroundWorker)sender;
             int i = 0;
             while (!worker.CancellationPending)
             {
-                var users = _processes.ToList();
-                users.Add(new User("FirstNAme" + i, "LastNAme" + i, "Email" + i, "Login" + i, "Password" + i));
-                worker.ReportProgress(10, users);
+
+                ObservableCollection<MyProcess> pr = new ObservableCollection<MyProcess>();
+                foreach (Process proc in Process.GetProcesses())
+                {
+                    pr.Add(new MyProcess(proc));
+                }
+                ///////////
+                //check it
+                ///////////
+                worker.ReportProgress(10, pr);
                 for (int j = 0; j < 10; j++)
                 {
                     Thread.Sleep(500);
@@ -250,7 +249,7 @@ namespace MyTaskManager.ViewModels
                     }
                 }
                 i++;
-            }*/
+            }
         }
         private async void BackgroundWorkerOnProgressChanged(object sender, ProgressChangedEventArgs progressChangedEventArgs)
         {
@@ -265,13 +264,19 @@ namespace MyTaskManager.ViewModels
 
         private void BackgroundTaskProcess()
         {
-            /*int i = 0;
+            int i = 0;
             while (!_token.IsCancellationRequested)
             {
-                var users = _processes.ToList();
-                users.Add(new User("FirstNAme" + i, "LastNAme" + i, "Email" + i, "Login" + i, "Password" + i));
-                LoaderManager.Instance.ShowLoader();
-                Users = new ObservableCollection<User>(users);
+
+                List<MyProcess> pr = new List<MyProcess>();
+                foreach (Process proc in Process.GetProcesses())
+                {
+                    pr.Add(new MyProcess(proc));
+                }
+
+                //LoaderManager.Instance.ShowLoader();
+                Processes = new ObservableCollection<MyProcess>(pr);
+
                 for (int j = 0; j < 3; j++)
                 {
                     Thread.Sleep(500);
@@ -290,7 +295,7 @@ namespace MyTaskManager.ViewModels
                 if (_token.IsCancellationRequested)
                     break;
                 i++;
-            }*/
+            }
         }
 
         internal void StopWorkingThread()

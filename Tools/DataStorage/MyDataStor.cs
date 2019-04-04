@@ -8,9 +8,10 @@ using MyTaskManager.Models;
 
 namespace MyTaskManager.Tools.DataStorage
 {
-    class Initialization: IDataStorage
+    class MyDataStor: IDataStorage
     {
         public List<MyProcess> _processes;
+
         public void AddProcess(MyProcess process)
         {
             throw new NotImplementedException();
@@ -20,22 +21,32 @@ namespace MyTaskManager.Tools.DataStorage
         {
             get
             {
-                return _processes.ToList(); 
+                return _processes;
 
             }
+            set
+            {
+                _processes = value;
+            }
         }
-       
 
-        internal Initialization()
+
+        internal MyDataStor()
         {
-           _processes = new List<MyProcess>();
-           List<MyProcess> proc = new List<MyProcess>();
-           foreach (Process process in Process.GetProcesses())
-           {
-               _processes.Add(new MyProcess(process));
-           }
+            _processes = new List<MyProcess>();
+            foreach (Process process in Process.GetProcesses())
+            {
+                _processes.Add(new MyProcess(process));
+            }
+
+        }
+
+        internal MyDataStor(List<MyProcess> proc)
+        {
+            _processes = proc;
 
         }
 
     }
 }
+
