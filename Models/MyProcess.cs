@@ -28,12 +28,26 @@ namespace MyTaskManager.Models
             _memoryPersent = process.PrivateMemorySize64 / 1024;
             _threadNum = process.Threads.Count;
             _user = process.MachineName;
-            //_filePath = process.MainModule.FileName;
-            _filePath = "path";
-            //_startTime = process.StartTime;
-            _startTime = DateTime.Today;
+            try
+            {
+
+                _filePath = process.MainModule.FileName;
+            }
+            catch (Exception e)
+            {
+                _filePath = "Access Denied";
+            }
             
-        }
+            try
+            {
+                _startTime = process.StartTime;
+            }
+            catch (Exception e)
+            {
+               _filePath = "Access Denied";
+            }
+
+}
 
         public string ProcessName
         {
