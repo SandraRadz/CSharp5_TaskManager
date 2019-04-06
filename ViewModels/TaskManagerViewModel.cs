@@ -99,8 +99,6 @@ namespace MyTaskManager.ViewModels
                 _processes.Add(new MyProcess(process));
             }
 
-   
-
             _threads = new ObservableCollection<ProcessThread>();
 
             Process proc = Process.GetProcesses()[0];
@@ -318,11 +316,12 @@ namespace MyTaskManager.ViewModels
             {
                     try
                     {
-                    Process.Start("explorer.exe", "/select, C:\\Users\\oleks\\Downloads");
+                        String mypath = SelectedItem.FilePath;
+                    Process.Start("explorer.exe", "/select, "+mypath);
                 }
                     catch (Exception ex)
                     {
-                        MessageBox.Show(ex.Message);
+                        MessageBox.Show("access denied");
                     }
                     Thread.Sleep(500);
 
