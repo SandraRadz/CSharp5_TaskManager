@@ -38,6 +38,9 @@ namespace MyTaskManager.ViewModels
         private DateTime _startTime;
 
         private RelayCommand<object> _deleteProcessCommand;
+        private RelayCommand<object> _openFolderCommand;
+
+
         public MyProcess SelectedItem { get; set; }
 
         public ObservableCollection<MyProcess> Processes
@@ -185,29 +188,58 @@ namespace MyTaskManager.ViewModels
             }
         }
 
-        private async void DeleteProcess(object o)
+        public RelayCommand<object> OpenFolderCommand
+        {
+            get
+            {
+                return _openFolderCommand ?? (_openFolderCommand = new RelayCommand<object>(
+                           OpenFolderProcess));
+            }
+        }
+
+
+        private async void OpenFolderProcess(object o)
         {
             LoaderManager.Instance.ShowLoader();
             await Task.Run(() =>
             {
                     try
                     {
-                        foreach (Process proc in Process.GetProcessesByName(SelectedItem.ProcessName))
-                        {
-                            proc.Kill();
-                        }
-                    }
+                    Process.Start("explorer.exe", "/select, C:\\Users\\oleks\\Downloads");
+                }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("Choose a process");
+                        MessageBox.Show(ex.Message);
                     }
-                    List<MyProcess> pr = new List<MyProcess>();
-                    foreach (Process proc in Process.GetProcesses())
+                    Thread.Sleep(500);
+
+            });
+            LoaderManager.Instance.HideLoader();
+        }
+
+        private async void DeleteProcess(object o)
+        {
+            LoaderManager.Instance.ShowLoader();
+            await Task.Run(() =>
+            {
+                try
+                {
+                    foreach (Process proc in Process.GetProcessesByName(SelectedItem.ProcessName))
                     {
-                        pr.Add(new MyProcess(proc));
+                        proc.Kill();
                     }
-                    Processes = new ObservableCollection<MyProcess>(pr);
-                    //Thread.Sleep(500);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Choose a process");
+                }
+                List<MyProcess> pr = new List<MyProcess>();
+                foreach (Process proc in Process.GetProcesses())
+                {
+                    pr.Add(new MyProcess(proc));
+                }
+                Processes = new ObservableCollection<MyProcess>(pr);
+                Thread.Sleep(500);
 
             });
             LoaderManager.Instance.HideLoader();
@@ -222,26 +254,18 @@ namespace MyTaskManager.ViewModels
        
 
        
-        private async void WorkingThreadProcess()
+        private void WorkingThreadProcess()
         {
             int i = 0;
             while (!_token.IsCancellationRequested)
             {
-                LoaderManager.Instance.ShowLoader();
-                await Task.Run(() =>
-                {
-                    List<MyProcess> pr = new List<MyProcess>(); 
+                List<MyProcess> pr = new List<MyProcess>(); 
                 foreach (Process proc in Process.GetProcesses())
                 {
                     pr.Add(new MyProcess(proc));
                 }
-                Thread.Sleep(2500);
-
-           
                 Processes = new ObservableCollection<MyProcess>(pr);
-                });
-                LoaderManager.Instance.HideLoader();
-
+            
                 if (_token.IsCancellationRequested)
                     break;
 

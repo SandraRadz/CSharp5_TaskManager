@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -31,5 +32,11 @@ namespace MyTaskManager
             DataContext = new MainWindowViewModel();
         }
 
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            base.OnClosing(e);
+            StationManager.CloseApp();
+        }
     }
 }

@@ -4,7 +4,8 @@
     Height="450" Width="1000">
     <Grid>
         <Button FontSize="18" Content="Delete process" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Command="{Binding DeleteCommand}" Margin="9,16,838,405"/>
-            <DataGrid ItemsSource="{Binding Processes, Mode=OneWay}" SelectedItem="{Binding SelectedItem}" IsReadOnly="True" AutoGenerateColumns="False" Margin="10,64,373,41" >
+        <Button FontSize="18" Content="Open folder" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Command="{Binding OpenFolderCommand}" Margin="207,16,640,405"/>
+        <DataGrid ItemsSource="{Binding Processes, Mode=OneWay}" SelectedItem="{Binding SelectedItem}" IsReadOnly="True" AutoGenerateColumns="False" Margin="10,64,373,41" >
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ProcessName" Binding="{Binding ProcessName}"></DataGridTextColumn>
                 <DataGridTextColumn Header="ID" Binding="{Binding ProcessId}"></DataGridTextColumn>
