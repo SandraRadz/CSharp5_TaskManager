@@ -464,24 +464,45 @@ namespace MyTaskManager.ViewModels
                 if (SelectedItem != null)
                 {
                     Process proc = Process.GetProcessById(SelectedItem.ProcessId);
-                    ProcessThreadCollection processThreads = proc.Threads;
-                    ProcessModuleCollection processModules = proc.Modules;
-
-                    List<ProcessThread> pth = new List<ProcessThread>();
-                    foreach (ProcessThread thread in processThreads)
+                    
+                    try
                     {
-                        pth.Add(thread);
+                        ProcessThreadCollection processThreads = proc.Threads;
+                        List<ProcessThread> pth = new List<ProcessThread>();
+                        foreach (ProcessThread thread in processThreads)
+                        {
+                            pth.Add(thread);
+                        }
+
+                        Threads = new ObservableCollection<ProcessThread>(pth);
+
+
+                    }
+                    catch (Exception e)
+                    {
+                        Threads = new ObservableCollection<ProcessThread>();
                     }
 
-                    Threads = new ObservableCollection<ProcessThread>(pth);
-
-                    List<ProcessModule> pm = new List<ProcessModule>();
-                    foreach (ProcessModule module in processModules)
+                    
+                    try
                     {
-                        pm.Add(module);
+                        ProcessModuleCollection processModules = proc.Modules;
+                        List<ProcessModule> pm = new List<ProcessModule>();
+                        foreach (ProcessModule module in processModules)
+                        {
+                            pm.Add(module);
+                        }
+
+                        Modules = new ObservableCollection<ProcessModule>(pm);
+
+                    }
+                    catch (Exception e)
+                    {
+                        Modules = new ObservableCollection<ProcessModule>();
                     }
 
-                    Modules = new ObservableCollection<ProcessModule>(pm);
+                   
+                   
                 }
 
                 Thread.Sleep(2000);
