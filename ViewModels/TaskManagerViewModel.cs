@@ -24,8 +24,11 @@ namespace MyTaskManager.ViewModels
         private ObservableCollection<ProcessThread> _threads;
         private ObservableCollection<ProcessModule> _modules;
         private Thread _workingThread;
+        private Thread _workingThreadMod;
         private readonly CancellationToken _token;
         private readonly CancellationTokenSource _tokenSource;
+
+
 
         private string _processName;
         private int _processId;
@@ -51,6 +54,8 @@ namespace MyTaskManager.ViewModels
         private RelayCommand<object> _getInfoCommand;
 
         private MyProcess _selectedItem;
+
+        public bool IsItemSelected => SelectedItem != null;
 
         public MyProcess SelectedItem
         {
@@ -102,6 +107,21 @@ namespace MyTaskManager.ViewModels
             }
 
             PName = "name";
+
+            _threads = new ObservableCollection<ProcessThread>();
+
+            Process proc = Process.GetProcesses()[0];
+            ProcessThreadCollection processThreads = proc.Threads;
+
+            List<ProcessThread> pth = new List<ProcessThread>();
+            foreach (ProcessThread thread in processThreads)
+            {
+                pth.Add(thread);
+            }
+            Threads = new ObservableCollection<ProcessThread>(pth);
+
+
+            _modules = new ObservableCollection<ProcessModule>();
 
             _tokenSource = new CancellationTokenSource();
             _token = _tokenSource.Token;
@@ -354,10 +374,12 @@ namespace MyTaskManager.ViewModels
         private async void GetInfoProcess(object o)
         {
             LoaderManager.Instance.ShowLoader();
+            
             await Task.Run(() =>
             {
                 try
                 {
+                    PName = "hello";
                     PName = SelectedItem.ProcessName;
                     Process proc = Process.GetProcessById(SelectedItem.ProcessId);
                     ProcessThreadCollection processThreads = proc.Threads;
@@ -386,6 +408,8 @@ namespace MyTaskManager.ViewModels
         {
             _workingThread = new Thread(WorkingThreadProcess);
             _workingThread.Start();
+            _workingThreadMod = new Thread(WorkingThreadProcessMod);
+            _workingThreadMod.Start();
            
         }
 
@@ -404,6 +428,7 @@ namespace MyTaskManager.ViewModels
                     pr.Add(new MyProcess(proc));
                 }
                 Processes = new ObservableCollection<MyProcess>(pr);
+                PName = ""+i;
                 if (SelectedItem != null)
                 {
                     PName = SelectedItem.ProcessName;
@@ -421,7 +446,34 @@ namespace MyTaskManager.ViewModels
             }
         }
 
-      
+        private void WorkingThreadProcessMod()
+        {
+            int i = 0;
+            while (!_token.IsCancellationRequested)
+            {
+                if (SelectedItem != null)
+                {
+                    Process proc = Process.GetProcessById(SelectedItem.ProcessId);
+                ProcessThreadCollection processThreads = proc.Threads;
+
+
+                List<ProcessThread> pth = new List<ProcessThread>();
+                foreach (ProcessThread thread in processThreads)
+                {
+                    pth.Add(thread);
+                }
+                Threads = new ObservableCollection<ProcessThread>(pth);
+}
+               
+                Thread.Sleep(2000);
+
+                if (_token.IsCancellationRequested)
+                    break;
+                i++;
+            }
+        }
+
+
 
         internal void StopWorkingThread()
         {
@@ -429,6 +481,12 @@ namespace MyTaskManager.ViewModels
             _workingThread.Join(2000);
             _workingThread.Abort();
             _workingThread = null;
+
+            _workingThreadMod.Join(2000);
+            _workingThreadMod.Abort();
+            _workingThreadMod = null;
+
+
         }
 
 

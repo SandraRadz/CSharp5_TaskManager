@@ -12,7 +12,7 @@
         <Button FontSize="18" Content="Get info about process" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Command="{Binding GetInfoCommand}" Margin="404,16,149,405"/>
         <Label  FontSize="14" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Content="Process:  " Margin="675,64,43,355" />
         <Label  FontSize="14" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Content="{Binding PName, Mode=TwoWay}" Margin="755,64,80,355" Grid.ColumnSpan="2" />
-        <DataGrid  ItemsSource="{Binding Processes, Mode=OneWay}" SelectedItem="{Binding SelectedItem, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" AutoGenerateColumns="False" Margin="10,64,149,41" >
+        <DataGrid  ItemsSource="{Binding Processes, Mode=OneWay}" SelectedItem="{Binding SelectedItem}" IsReadOnly="True" AutoGenerateColumns="False" Margin="10,64,149,41" >
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ProcessName" Binding="{Binding ProcessName}"></DataGridTextColumn>
                 <DataGridTextColumn Header="ID" Binding="{Binding ProcessId}"></DataGridTextColumn>
