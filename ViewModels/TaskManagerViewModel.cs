@@ -8,10 +8,12 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using MyTaskManager.Annotations;
 using MyTaskManager.Models;
 using MyTaskManager.Tools.DataStorage;
 using MyTaskManager.Tools.Managers;
+using СSharp_Task4.Tools;
 
 namespace MyTaskManager.ViewModels
 {
@@ -34,6 +36,9 @@ namespace MyTaskManager.ViewModels
         private string _user;
         private string _filePath;
         private DateTime _startTime;
+
+        private RelayCommand<object> _deleteProcessCommand;
+        public MyProcess SelectedItem { get; set; }
 
         public ObservableCollection<MyProcess> Processes
         {
@@ -169,134 +174,87 @@ namespace MyTaskManager.ViewModels
                 _startTime = value;
             }
         }
-  
 
-    private void StartWorkingThread()
+
+        public RelayCommand<object> DeleteCommand
+        {
+            get
+            {
+                return _deleteProcessCommand ?? (_deleteProcessCommand = new RelayCommand<object>(
+                           DeleteProcess));
+            }
+        }
+
+        private async void DeleteProcess(object o)
+        {
+            LoaderManager.Instance.ShowLoader();
+            await Task.Run(() =>
+            {
+                    try
+                    {
+                        foreach (Process proc in Process.GetProcessesByName(SelectedItem.ProcessName))
+                        {
+                            proc.Kill();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Choose a process");
+                    }
+                    List<MyProcess> pr = new List<MyProcess>();
+                    foreach (Process proc in Process.GetProcesses())
+                    {
+                        pr.Add(new MyProcess(proc));
+                    }
+                    Processes = new ObservableCollection<MyProcess>(pr);
+                    //Thread.Sleep(500);
+
+            });
+            LoaderManager.Instance.HideLoader();
+        }
+
+        private void StartWorkingThread()
         {
             _workingThread = new Thread(WorkingThreadProcess);
             _workingThread.Start();
         }
 
-        private void StartBackgroundWorker()
-        {
-            _backgroundWorker = new BackgroundWorker();
-            _backgroundWorker.WorkerSupportsCancellation = true;
-            _backgroundWorker.WorkerReportsProgress = true;
-            _backgroundWorker.DoWork += BackgroundWorkerProcess;
-            _backgroundWorker.ProgressChanged += BackgroundWorkerOnProgressChanged;
-            _backgroundWorker.RunWorkerAsync();
-        }
-        
+       
 
-        private void StartBarckgroundTask()
-        {
-            _backgroundTask = Task.Factory.StartNew(BackgroundTaskProcess, TaskCreationOptions.LongRunning);
-        }
-
-        private void WorkingThreadProcess()
+       
+        private async void WorkingThreadProcess()
         {
             int i = 0;
             while (!_token.IsCancellationRequested)
             {
-                List<MyProcess> pr = new List<MyProcess>(); 
+                LoaderManager.Instance.ShowLoader();
+                await Task.Run(() =>
+                {
+                    List<MyProcess> pr = new List<MyProcess>(); 
                 foreach (Process proc in Process.GetProcesses())
                 {
                     pr.Add(new MyProcess(proc));
                 }
-                
-                //LoaderManager.Instance.ShowLoader();
+                Thread.Sleep(2500);
+
+           
                 Processes = new ObservableCollection<MyProcess>(pr);
-               
-                if (_token.IsCancellationRequested)
-                    break;
-                //LoaderManager.Instance.HideLoader();
-                for (int j = 0; j < 10; j++)
-                {
-                    Thread.Sleep(500);
-                    if (_token.IsCancellationRequested)
-                        break;
-                }
-                if (_token.IsCancellationRequested)
-                    break;
-                i++;
-            }
-        }
-
-        private void BackgroundWorkerProcess(object sender, DoWorkEventArgs doWorkEventArgs)
-        {
-            var worker = (BackgroundWorker)sender;
-            int i = 0;
-            while (!worker.CancellationPending)
-            {
-
-                ObservableCollection<MyProcess> pr = new ObservableCollection<MyProcess>();
-                foreach (Process proc in Process.GetProcesses())
-                {
-                    pr.Add(new MyProcess(proc));
-                }
-                ///////////
-                //check it
-                ///////////
-                worker.ReportProgress(10, pr);
-                for (int j = 0; j < 10; j++)
-                {
-                    Thread.Sleep(500);
-                    if (worker.CancellationPending)
-                    {
-                        doWorkEventArgs.Cancel = true;
-                        _tokenSource.Cancel();
-                        break;
-                    }
-                }
-                i++;
-            }
-        }
-        private async void BackgroundWorkerOnProgressChanged(object sender, ProgressChangedEventArgs progressChangedEventArgs)
-        {
-            LoaderManager.Instance.ShowLoader();
-            await Task.Run(() =>
-            {
-                Processes = new ObservableCollection<MyProcess>((List<MyProcess>)progressChangedEventArgs.UserState);
-                Thread.Sleep(2000);
-            });
-            LoaderManager.Instance.HideLoader();
-        }
-
-        private void BackgroundTaskProcess()
-        {
-            int i = 0;
-            while (!_token.IsCancellationRequested)
-            {
-
-                List<MyProcess> pr = new List<MyProcess>();
-                foreach (Process proc in Process.GetProcesses())
-                {
-                    pr.Add(new MyProcess(proc));
-                }
-
-                //LoaderManager.Instance.ShowLoader();
-                Processes = new ObservableCollection<MyProcess>(pr);
-
-                for (int j = 0; j < 3; j++)
-                {
-                    Thread.Sleep(500);
-                    if (_token.IsCancellationRequested)
-                        break;
-                }
-                if (_token.IsCancellationRequested)
-                    break;
+                });
                 LoaderManager.Instance.HideLoader();
-                for (int j = 0; j < 10; j++)
-                {
-                    Thread.Sleep(500);
-                    if (_token.IsCancellationRequested)
-                        break;
-                }
+
+                if (_token.IsCancellationRequested)
+                    break;
+
+           
+                 Thread.Sleep(4000);
+                
                 if (_token.IsCancellationRequested)
                     break;
                 i++;
             }
         }
+
+      
 
         internal void StopWorkingThread()
         {
@@ -306,26 +264,7 @@ namespace MyTaskManager.ViewModels
             _workingThread = null;
         }
 
-        internal void StopBackgroundWorker()
-        {
-            _backgroundWorker.CancelAsync();
-            for (int i = 0; i < 4; i++)
-            {
-                if (_token.IsCancellationRequested)
-                    break;
-                Thread.Sleep(500);
-            }
-            _backgroundWorker.Dispose();
-            _backgroundWorker = null;
-        }
-
-        internal void StopBackgroundTask()
-        {
-            _tokenSource.Cancel();
-            _backgroundTask.Wait(2000);
-            _backgroundTask.Dispose();
-            _backgroundTask = null;
-        }
+       
 
         public event PropertyChangedEventHandler PropertyChanged;
 

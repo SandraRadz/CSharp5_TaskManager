@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:MyTaskManager"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="1000">
-    <Grid>
+    <Grid IsEnabled= "{Binding IsControlEnabled, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
         <local:TaskManager></local:TaskManager>
     </Grid>
 </Window>
