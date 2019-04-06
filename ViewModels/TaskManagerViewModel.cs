@@ -122,6 +122,16 @@ namespace MyTaskManager.ViewModels
 
 
             _modules = new ObservableCollection<ProcessModule>();
+            ProcessModuleCollection processModules = proc.Modules;
+
+            List<ProcessModule> pm = new List<ProcessModule>();
+            foreach (ProcessModule module in processModules)
+            {
+                pm.Add(module);
+            }
+            Modules = new ObservableCollection<ProcessModule>(pm);
+
+
 
             _tokenSource = new CancellationTokenSource();
             _token = _tokenSource.Token;
@@ -428,7 +438,7 @@ namespace MyTaskManager.ViewModels
                     pr.Add(new MyProcess(proc));
                 }
                 Processes = new ObservableCollection<MyProcess>(pr);
-                PName = ""+i;
+                
                 if (SelectedItem != null)
                 {
                     PName = SelectedItem.ProcessName;
@@ -454,17 +464,26 @@ namespace MyTaskManager.ViewModels
                 if (SelectedItem != null)
                 {
                     Process proc = Process.GetProcessById(SelectedItem.ProcessId);
-                ProcessThreadCollection processThreads = proc.Threads;
+                    ProcessThreadCollection processThreads = proc.Threads;
+                    ProcessModuleCollection processModules = proc.Modules;
 
+                    List<ProcessThread> pth = new List<ProcessThread>();
+                    foreach (ProcessThread thread in processThreads)
+                    {
+                        pth.Add(thread);
+                    }
 
-                List<ProcessThread> pth = new List<ProcessThread>();
-                foreach (ProcessThread thread in processThreads)
-                {
-                    pth.Add(thread);
+                    Threads = new ObservableCollection<ProcessThread>(pth);
+
+                    List<ProcessModule> pm = new List<ProcessModule>();
+                    foreach (ProcessModule module in processModules)
+                    {
+                        pm.Add(module);
+                    }
+
+                    Modules = new ObservableCollection<ProcessModule>(pm);
                 }
-                Threads = new ObservableCollection<ProcessThread>(pth);
-}
-               
+
                 Thread.Sleep(2000);
 
                 if (_token.IsCancellationRequested)
