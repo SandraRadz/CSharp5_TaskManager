@@ -9,9 +9,6 @@
         </Grid.ColumnDefinitions>
         <Button FontSize="18" Content="Delete process" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Command="{Binding DeleteCommand}" Margin="9,16,614,405"/>
         <Button FontSize="18" Content="Open folder" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Command="{Binding OpenFolderCommand}" Margin="207,16,416,405"/>
-        <Button FontSize="18" Content="Get info about process" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Command="{Binding GetInfoCommand}" Margin="404,16,149,405"/>
-        <Label  FontSize="14" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Content="Process:  " Margin="675,64,43,355" />
-        <Label  FontSize="14" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Content="{Binding PName, Mode=TwoWay}" Margin="755,64,80,355" Grid.ColumnSpan="2" />
         <DataGrid  ItemsSource="{Binding Processes, Mode=OneWay}" SelectedItem="{Binding SelectedItem}" IsReadOnly="True" AutoGenerateColumns="False" Margin="10,64,149,41" >
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ProcessName" Binding="{Binding ProcessName}"></DataGridTextColumn>
@@ -25,14 +22,14 @@
                 <DataGridTextColumn Header="StartTime" Binding="{Binding StartTime}"></DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
-        <DataGrid  ItemsSource="{Binding Modules, Mode=OneWay}" IsReadOnly="True" AutoGenerateColumns="False" Margin="675,104,80,215" Grid.ColumnSpan="2" >
+        <DataGrid  ItemsSource="{Binding Modules, Mode=OneWay}" IsReadOnly="True" AutoGenerateColumns="False" Margin="675,64,24,231" Grid.ColumnSpan="2" >
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ModuleName" Binding="{Binding ModuleName}"></DataGridTextColumn>
                 <DataGridTextColumn Header="ModuleId" Binding="{Binding ModuleId}"></DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
 
-        <DataGrid  ItemsSource="{Binding Threads, Mode=OneWay}" IsReadOnly="True" AutoGenerateColumns="False" Margin="675,278,80,41" Grid.ColumnSpan="2" >
+        <DataGrid  ItemsSource="{Binding Threads, Mode=OneWay}" IsReadOnly="True" AutoGenerateColumns="False" Margin="675,248,24,41" Grid.ColumnSpan="2" >
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ThreadId" Binding="{Binding ThreadId}"></DataGridTextColumn>
                 <DataGridTextColumn Header="ThreadActive" Binding="{Binding ThreadActive}"></DataGridTextColumn>

@@ -3,15 +3,12 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using MyTaskManager.Annotations;
 using MyTaskManager.Models;
-using MyTaskManager.Tools.DataStorage;
 using MyTaskManager.Tools.Managers;
 using СSharp_Task4.Tools;
 
@@ -44,14 +41,10 @@ namespace MyTaskManager.ViewModels
         private bool _threadActive;
         private DateTime _threadTime;
         private string _threadPath;
-
-        private string _pName;
         
-
 
         private RelayCommand<object> _deleteProcessCommand;
         private RelayCommand<object> _openFolderCommand;
-        private RelayCommand<object> _getInfoCommand;
 
         private MyProcess _selectedItem;
 
@@ -106,7 +99,7 @@ namespace MyTaskManager.ViewModels
                 _processes.Add(new MyProcess(process));
             }
 
-            PName = "name";
+   
 
             _threads = new ObservableCollection<ProcessThread>();
 
@@ -151,17 +144,7 @@ namespace MyTaskManager.ViewModels
             }
         }
 
-        public string PName
-        {
-            get
-            {
-                return _pName;
-            }
-            set
-            {
-                _pName = value;
-            }
-        }
+      
 
         public int ProcessId
         {
@@ -325,14 +308,7 @@ namespace MyTaskManager.ViewModels
             }
         }
 
-        public RelayCommand<object> GetInfoCommand
-        {
-            get
-            {
-                return _getInfoCommand ?? (_getInfoCommand = new RelayCommand<object>(
-                           GetInfoProcess));
-            }
-        }
+ 
 
 
         private async void OpenFolderProcess(object o)
@@ -381,39 +357,7 @@ namespace MyTaskManager.ViewModels
             LoaderManager.Instance.HideLoader();
         }
 
-        private async void GetInfoProcess(object o)
-        {
-            LoaderManager.Instance.ShowLoader();
-            
-            await Task.Run(() =>
-            {
-                try
-                {
-                    PName = "hello";
-                    PName = SelectedItem.ProcessName;
-                    Process proc = Process.GetProcessById(SelectedItem.ProcessId);
-                    ProcessThreadCollection processThreads = proc.Threads;
-
-                    List<ProcessThread> pth = new List<ProcessThread>();
-                    foreach (ProcessThread thread in processThreads)
-                    {
-                        pth.Add(thread);
-                    }
-                    Threads = new ObservableCollection<ProcessThread>(pth);
-
-
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Choose a process");
-                }
-
-               
-
-            });
-            LoaderManager.Instance.HideLoader();
-        }
-
+       
         private void StartWorkingThread()
         {
             _workingThread = new Thread(WorkingThreadProcess);
@@ -439,10 +383,7 @@ namespace MyTaskManager.ViewModels
                 }
                 Processes = new ObservableCollection<MyProcess>(pr);
                 
-                if (SelectedItem != null)
-                {
-                    PName = SelectedItem.ProcessName;
-                }
+               
            
                 if (_token.IsCancellationRequested)
                     break;
