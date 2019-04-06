@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Windows;
+using MyTaskManager.Models;
 using MyTaskManager.Tools.DataStorage;
 
 namespace MyTaskManager.Tools.Managers
@@ -11,7 +12,7 @@ namespace MyTaskManager.Tools.Managers
 
         private static IDataStorage _dataStorage;
 
-        internal static Process CurrentProcess { get; set; }
+        internal static MyProcess CurrentProcess { get; set; }
 
         internal static IDataStorage DataStorage
         {

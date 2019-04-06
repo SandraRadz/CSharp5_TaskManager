@@ -40,8 +40,17 @@ namespace MyTaskManager.ViewModels
         private RelayCommand<object> _deleteProcessCommand;
         private RelayCommand<object> _openFolderCommand;
 
+        private MyProcess _selectedItem;
 
-        public MyProcess SelectedItem { get; set; }
+        public MyProcess SelectedItem
+        {
+            get => _selectedItem;
+            set
+            {
+                _selectedItem = value;
+                OnPropertyChanged();
+            }
+        }
 
         public ObservableCollection<MyProcess> Processes
         {
@@ -224,10 +233,9 @@ namespace MyTaskManager.ViewModels
             {
                 try
                 {
-                    foreach (Process proc in Process.GetProcessesByName(SelectedItem.ProcessName))
-                    {
-                        proc.Kill();
-                    }
+                    Process proc = Process.GetProcessById(SelectedItem.ProcessId);
+                   proc.Kill();
+                    
                 }
                 catch (Exception ex)
                 {
@@ -259,13 +267,17 @@ namespace MyTaskManager.ViewModels
             int i = 0;
             while (!_token.IsCancellationRequested)
             {
+                StationManager.CurrentProcess = _selectedItem;
+                
                 List<MyProcess> pr = new List<MyProcess>(); 
                 foreach (Process proc in Process.GetProcesses())
                 {
                     pr.Add(new MyProcess(proc));
                 }
                 Processes = new ObservableCollection<MyProcess>(pr);
-            
+
+                _selectedItem = StationManager.CurrentProcess;
+               
                 if (_token.IsCancellationRequested)
                     break;
 
