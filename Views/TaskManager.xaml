@@ -5,7 +5,7 @@
     <Grid>
         <Button FontSize="18" Content="Delete process" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Command="{Binding DeleteCommand}" Margin="9,16,838,405"/>
         <Button FontSize="18" Content="Open folder" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Command="{Binding OpenFolderCommand}" Margin="207,16,640,405"/>
-        <DataGrid Name="MyDataGrid" ItemsSource="{Binding Processes, Mode=OneWay}" SelectedItem="{Binding SelectedItem}" IsReadOnly="True" AutoGenerateColumns="False" Margin="10,64,373,41" >
+        <DataGrid  ItemsSource="{Binding Processes, Mode=OneWay}" SelectedItem="{Binding SelectedItem, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" AutoGenerateColumns="False" Margin="10,64,373,41" >
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ProcessName" Binding="{Binding ProcessName}"></DataGridTextColumn>
                 <DataGridTextColumn Header="ID" Binding="{Binding ProcessId}"></DataGridTextColumn>
@@ -16,6 +16,21 @@
                 <DataGridTextColumn Header="User" Binding="{Binding User}"></DataGridTextColumn>
                 <DataGridTextColumn Header="FilePath" Binding="{Binding FilePath}"></DataGridTextColumn>
                 <DataGridTextColumn Header="StartTime" Binding="{Binding StartTime}"></DataGridTextColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+        <DataGrid  ItemsSource="{Binding Modules, Mode=OneWay}" IsReadOnly="True" AutoGenerateColumns="False" Margin="675,64,125,255" >
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ModuleName" Binding="{Binding ModuleName}"></DataGridTextColumn>
+                <DataGridTextColumn Header="ModuleId" Binding="{Binding ModuleId}"></DataGridTextColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <DataGrid  ItemsSource="{Binding Threads, Mode=OneWay}" IsReadOnly="True" AutoGenerateColumns="False" Margin="675,278,125,41" >
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ThreadId" Binding="{Binding ThreadId}"></DataGridTextColumn>
+                <DataGridTextColumn Header="ThreadActive" Binding="{Binding ThreadActive}"></DataGridTextColumn>
+                <DataGridTextColumn Header="ThreadTime" Binding="{Binding ThreadTime}"></DataGridTextColumn>
+                <DataGridTextColumn Header="ThreadPath" Binding="{Binding ThreadPath}"></DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

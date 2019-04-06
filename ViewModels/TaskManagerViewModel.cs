@@ -22,10 +22,8 @@ namespace MyTaskManager.ViewModels
         
         private ObservableCollection<MyProcess> _processes;
         private Thread _workingThread;
-        private CancellationToken _token;
-        private CancellationTokenSource _tokenSource;
-        private BackgroundWorker _backgroundWorker;
-        private Task _backgroundTask;
+        private readonly CancellationToken _token;
+        private readonly CancellationTokenSource _tokenSource;
 
         private string _processName;
         private int _processId;
@@ -70,8 +68,7 @@ namespace MyTaskManager.ViewModels
             {
                 _processes.Add(new MyProcess(process));
             }
-
-            //StationManager.Initialize(new MyDataStor(_processes.ToList()));
+            
 
             _tokenSource = new CancellationTokenSource();
             _token = _tokenSource.Token;
@@ -257,6 +254,7 @@ namespace MyTaskManager.ViewModels
         {
             _workingThread = new Thread(WorkingThreadProcess);
             _workingThread.Start();
+           
         }
 
        
@@ -267,17 +265,17 @@ namespace MyTaskManager.ViewModels
             int i = 0;
             while (!_token.IsCancellationRequested)
             {
-                StationManager.CurrentProcess = _selectedItem;
-                
+
+               
                 List<MyProcess> pr = new List<MyProcess>(); 
                 foreach (Process proc in Process.GetProcesses())
                 {
                     pr.Add(new MyProcess(proc));
                 }
                 Processes = new ObservableCollection<MyProcess>(pr);
+  
 
-                _selectedItem = StationManager.CurrentProcess;
-               
+
                 if (_token.IsCancellationRequested)
                     break;
 
@@ -300,7 +298,7 @@ namespace MyTaskManager.ViewModels
             _workingThread = null;
         }
 
-       
+
 
         public event PropertyChangedEventHandler PropertyChanged;
 
