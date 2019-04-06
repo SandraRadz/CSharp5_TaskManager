@@ -41,7 +41,9 @@ namespace MyTaskManager.ViewModels
         private bool _threadActive;
         private DateTime _threadTime;
         private string _threadPath;
-        
+
+        private string _moduleName;
+        private string _fileName;
 
         private RelayCommand<object> _deleteProcessCommand;
         private RelayCommand<object> _openFolderCommand;

@@ -25,16 +25,15 @@
         <DataGrid  ItemsSource="{Binding Modules, Mode=OneWay}" IsReadOnly="True" AutoGenerateColumns="False" Margin="675,64,24,231" Grid.ColumnSpan="2" >
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ModuleName" Binding="{Binding ModuleName}"></DataGridTextColumn>
-                <DataGridTextColumn Header="ModuleId" Binding="{Binding ModuleId}"></DataGridTextColumn>
+                <DataGridTextColumn Header="FileName" Binding="{Binding FileName}"></DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
 
         <DataGrid  ItemsSource="{Binding Threads, Mode=OneWay}" IsReadOnly="True" AutoGenerateColumns="False" Margin="675,248,24,41" Grid.ColumnSpan="2" >
             <DataGrid.Columns>
-                <DataGridTextColumn Header="ThreadId" Binding="{Binding ThreadId}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Id" Binding="{Binding Id}"></DataGridTextColumn>
                 <DataGridTextColumn Header="ThreadActive" Binding="{Binding ThreadActive}"></DataGridTextColumn>
-                <DataGridTextColumn Header="ThreadTime" Binding="{Binding ThreadTime}"></DataGridTextColumn>
-                <DataGridTextColumn Header="ThreadPath" Binding="{Binding ThreadPath}"></DataGridTextColumn>
+                <DataGridTextColumn Header="StartTime" Binding="{Binding StartTime}"></DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>
