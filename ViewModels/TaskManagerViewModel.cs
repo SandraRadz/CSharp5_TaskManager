@@ -21,6 +21,8 @@ namespace MyTaskManager.ViewModels
     {
         
         private ObservableCollection<MyProcess> _processes;
+        private ObservableCollection<ProcessThread> _threads;
+        private ObservableCollection<ProcessModule> _modules;
         private Thread _workingThread;
         private readonly CancellationToken _token;
         private readonly CancellationTokenSource _tokenSource;
@@ -35,8 +37,18 @@ namespace MyTaskManager.ViewModels
         private string _filePath;
         private DateTime _startTime;
 
+        private int _threadId;
+        private bool _threadActive;
+        private DateTime _threadTime;
+        private string _threadPath;
+
+        private string _pName;
+        
+
+
         private RelayCommand<object> _deleteProcessCommand;
         private RelayCommand<object> _openFolderCommand;
+        private RelayCommand<object> _getInfoCommand;
 
         private MyProcess _selectedItem;
 
@@ -47,6 +59,7 @@ namespace MyTaskManager.ViewModels
             {
                 _selectedItem = value;
                 OnPropertyChanged();
+                OnPropertyChanged($"IsItemSelected");
             }
         }
 
@@ -60,6 +73,25 @@ namespace MyTaskManager.ViewModels
             }
         }
 
+        public ObservableCollection<ProcessThread> Threads
+        {
+            get => _threads;
+            private set
+            {
+                _threads = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public ObservableCollection<ProcessModule> Modules
+        {
+            get => _modules;
+            private set
+            {
+                _modules = value;
+                OnPropertyChanged();
+            }
+        }
 
         internal TaskManagerViewModel()
         {
@@ -68,7 +100,8 @@ namespace MyTaskManager.ViewModels
             {
                 _processes.Add(new MyProcess(process));
             }
-            
+
+            PName = "name";
 
             _tokenSource = new CancellationTokenSource();
             _token = _tokenSource.Token;
@@ -85,6 +118,18 @@ namespace MyTaskManager.ViewModels
             set
             {
                 _processName = value;
+            }
+        }
+
+        public string PName
+        {
+            get
+            {
+                return _pName;
+            }
+            set
+            {
+                _pName = value;
             }
         }
 
@@ -184,6 +229,53 @@ namespace MyTaskManager.ViewModels
             }
         }
 
+        public int ThreadId
+        {
+            get
+            {
+                return _threadId;
+            }
+            set
+            {
+                _threadId = value;
+            }
+        }
+
+        public bool ThreadActive
+        {
+            get
+            {
+                return _threadActive;
+            }
+            set
+            {
+                _threadActive = value;
+            }
+        }
+
+        public string ThreadPath
+        {
+            get
+            {
+                return _threadPath;
+            }
+            set
+            {
+                _threadPath = value;
+            }
+        }
+
+        public DateTime TreadTime
+        {
+            get
+            {
+                return _threadTime;
+            }
+            set
+            {
+                _threadTime = value;
+            }
+        }
 
         public RelayCommand<object> DeleteCommand
         {
@@ -200,6 +292,15 @@ namespace MyTaskManager.ViewModels
             {
                 return _openFolderCommand ?? (_openFolderCommand = new RelayCommand<object>(
                            OpenFolderProcess));
+            }
+        }
+
+        public RelayCommand<object> GetInfoCommand
+        {
+            get
+            {
+                return _getInfoCommand ?? (_getInfoCommand = new RelayCommand<object>(
+                           GetInfoProcess));
             }
         }
 
@@ -250,6 +351,37 @@ namespace MyTaskManager.ViewModels
             LoaderManager.Instance.HideLoader();
         }
 
+        private async void GetInfoProcess(object o)
+        {
+            LoaderManager.Instance.ShowLoader();
+            await Task.Run(() =>
+            {
+                try
+                {
+                    PName = SelectedItem.ProcessName;
+                    Process proc = Process.GetProcessById(SelectedItem.ProcessId);
+                    ProcessThreadCollection processThreads = proc.Threads;
+
+                    List<ProcessThread> pth = new List<ProcessThread>();
+                    foreach (ProcessThread thread in processThreads)
+                    {
+                        pth.Add(thread);
+                    }
+                    Threads = new ObservableCollection<ProcessThread>(pth);
+
+
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Choose a process");
+                }
+
+               
+
+            });
+            LoaderManager.Instance.HideLoader();
+        }
+
         private void StartWorkingThread()
         {
             _workingThread = new Thread(WorkingThreadProcess);
@@ -265,17 +397,18 @@ namespace MyTaskManager.ViewModels
             int i = 0;
             while (!_token.IsCancellationRequested)
             {
-
-               
+                
                 List<MyProcess> pr = new List<MyProcess>(); 
                 foreach (Process proc in Process.GetProcesses())
                 {
                     pr.Add(new MyProcess(proc));
                 }
                 Processes = new ObservableCollection<MyProcess>(pr);
-  
-
-
+                if (SelectedItem != null)
+                {
+                    PName = SelectedItem.ProcessName;
+                }
+           
                 if (_token.IsCancellationRequested)
                     break;
 
